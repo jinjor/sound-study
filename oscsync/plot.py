@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button
-import lib
+import wave
 
 sample_rate = 48000
 dt = 1 / sample_rate
@@ -9,7 +9,10 @@ N = 4096
 
 t = np.arange(0, N*dt, dt)
 
-f = lib.hard_sync
+# f = lib.wt_saw
+# f = lib.saw
+# f = lib.wt_hard_sync
+f = wave.hard_sync
 
 def get_freq_amp(x, N, dt):
     F = np.fft.fft(x)
@@ -18,7 +21,7 @@ def get_freq_amp(x, N, dt):
     return freq, Amp
 
 def calc(freq, ratio):
-    x = f(2 * np.pi * freq * t, ratio)
+    x = f(freq, 2 * np.pi * freq * t, ratio)
     freq, Amp = get_freq_amp(x, N, dt)
     return x, freq, Amp
 
@@ -36,8 +39,8 @@ ax1.set_ylabel("Signal")
 ax1.grid()
 
 ax2 = fig.add_subplot(1,2,2)
-line2, = ax2.plot(freq[1:int(N/2)], Amp[1:int(N/2)])
-ax2.set_ylim(0, 1)
+line2, = ax2.plot(freq[1:int(N/2)], 20 * np.log10(Amp[1:int(N/2)]))
+ax2.set_ylim(-100, 0)
 ax2.set_xlabel("Freqency [Hz]")
 ax2.set_ylabel("Amplitude")
 ax2.grid()
@@ -69,7 +72,7 @@ def update(val=None):
     x, freq, Amp = calc(freq_slider.val, ratio_slider.val)
     line1.set_ydata(x)
     line2.set_xdata(freq[1:int(N/2)])
-    line2.set_ydata(Amp[1:int(N/2)])
+    line2.set_ydata(20 * np.log10(Amp[1:int(N/2)]))
     fig.canvas.draw_idle()
 
 update()
