@@ -1,28 +1,43 @@
 import numpy as np
 from wavetable import np_get_saw_value
 
-def phase_saw(angle):
-    return np.remainder(angle, 2 * np.pi)
+def hard_sync(freq, t, opt):
+    return np.sin(opt['ratio'] * (2 * np.pi) * np.remainder(freq * t, 1))
 
-def phase_wt_saw(freq, angle):
-    return (np_get_saw_value(freq, angle) * np.pi + np.pi).astype('float32')
+def wt_hard_sync(freq, t, opt):
+    normalized_angle = np.remainder(freq * t, 1)
+    angle = (np_get_saw_value(freq, normalized_angle) * np.pi + np.pi).astype('float32')
+    return np.sin(opt['ratio'] * angle)
 
-def hard_sync(freq, angle, ratio):
-    return np.sin(ratio * phase_saw(angle))
+def _sin(normalized_angle):
+    return np.sin(2 * np.pi * normalized_angle)
 
-def wt_hard_sync(freq, angle, ratio):
-    return np.sin(ratio * phase_wt_saw(freq, angle))
+def sin(freq, t, opt):
+    normalized_angle = np.remainder(freq * t, 1)
+    return _sin(normalized_angle)
 
-def sin(freq, angle, ratio):
-    return np.sin(angle)
-
-def square(freq, angle, ratio):
-    normalized_angle = np.remainder(angle, 2 * np.pi) / (2 * np.pi)
+def _square(normalized_angle):
     return np.where(normalized_angle > 0.5, 1, -1)
 
-def saw(freq, angle, ratio):
-    normalized_angle = np.remainder(angle, 2 * np.pi) / (2 * np.pi)
+def square(freq, t, opt):
+    normalized_angle = np.remainder(freq * t, 1)
+    return _square(normalized_angle)
+
+def _saw(normalized_angle):
     return normalized_angle * 2 - 1
 
-def wt_saw(freq, angle, ratio):
-    return np_get_saw_value(freq, angle)
+def saw(freq, t, opt):
+    normalized_angle = np.remainder(freq * t, 1)
+    return _saw(normalized_angle)
+
+def wt_saw(freq, t, opt):
+    normalized_angle = np.remainder(freq * t, 1)
+    return np_get_saw_value(freq, normalized_angle)
+
+def fm_help(career, modulator, opt, freq, t):
+    normalized_angle = np.remainder(freq * t, 1)
+    normalized_angle2 = np.remainder(opt['ratio'] * freq * t, 1)
+    return career(normalized_angle + opt['amount'] * modulator(normalized_angle2))
+
+def fm(career, modulator):
+    return lambda freq, t, opt: fm_help(career, modulator, opt, freq, t)

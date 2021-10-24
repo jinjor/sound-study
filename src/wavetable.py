@@ -40,11 +40,9 @@ def make_saw_table():
     return ret
 saw_table = make_saw_table()
 
-def get_saw_value(freq, angle):
+def get_saw_value(freq, normalized_angle):
     note_index = lookup_table[int(freq)]
     array = saw_table[note_index]
-
-    normalized_angle = math.fmod(angle, (2 * np.pi)) / (2 * np.pi)
     index_float = normalized_angle * 4095
     index = int(index_float)
     fragment = index_float - index
