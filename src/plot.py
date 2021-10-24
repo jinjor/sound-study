@@ -12,8 +12,9 @@ t = np.arange(0, N*dt, dt)
 # f = wave.wt_saw
 # f = wave.saw
 # f = wave.wt_hard_sync
-f = wave.hard_sync
+# f = wave.hard_sync
 # f = wave.fm(wave._sin, wave._saw)
+f = wave.fm(wave._sin, wave.modulator_hardsync)
 
 def get_freq_amp(x, N, dt):
     F = np.fft.fft(x)

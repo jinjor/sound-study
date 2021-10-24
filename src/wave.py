@@ -35,9 +35,13 @@ def wt_saw(freq, t, opt):
     return np_get_saw_value(freq, normalized_angle)
 
 def fm_help(career, modulator, opt, freq, t):
-    normalized_angle = np.remainder(freq * t, 1)
+    normalized_angle1 = np.remainder(freq * t, 1)
     normalized_angle2 = np.remainder(opt['ratio'] * freq * t, 1)
-    return career(normalized_angle + opt['amount'] * modulator(normalized_angle2))
+    normalized_angle = np.remainder(normalized_angle1 + opt['amount'] * modulator(normalized_angle2), 1)
+    return career(normalized_angle)
 
 def fm(career, modulator):
     return lambda freq, t, opt: fm_help(career, modulator, opt, freq, t)
+
+def modulator_hardsync(normalized_angle):
+    return normalized_angle
