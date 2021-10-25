@@ -11,13 +11,15 @@ t = np.arange(0, N*dt, dt)
 
 # f = wave.wt_saw
 # f = wave.saw
+# f = wave.wt_square
+f = wave.square
 # f = wave.wt_hard_sync
 # f = wave.hard_sync
 # f = wave.fm(wave._sin, wave._saw)
 # f = wave.fm(lambda freq, normalized_angle: wave._sin(normalized_angle),
 #             lambda freq, normalized_angle: wave.modulator_hardsync(normalized_angle))
-f = wave.fm(lambda freq, normalized_angle: wave._sin(normalized_angle),
-            lambda freq, normalized_angle: wave._saw(normalized_angle))
+# f = wave.fm(lambda freq, normalized_angle: wave._sin(normalized_angle),
+#             lambda freq, normalized_angle: wave._saw(normalized_angle))
 # f = wave.fm(lambda freq, normalized_angle: wave._sin(normalized_angle),
 #             lambda freq, normalized_angle: wave._wt_saw(freq, normalized_angle))
 

@@ -36,6 +36,12 @@ def wt_saw(freq, t, opt):
     normalized_angle = np.remainder(freq * t, 1)
     return _wt_saw(freq, normalized_angle)
 
+_wt_square = wavetable.np_get_square_value
+
+def wt_square(freq, t, opt):
+    normalized_angle = np.remainder(freq * t, 1)
+    return _wt_square(freq, normalized_angle)
+
 def fm_help(career, modulator, opt, freq, t):
     normalized_angle1 = np.remainder(freq * t, 1)
     normalized_angle2 = np.remainder(opt['ratio'] * freq * t, 1)
