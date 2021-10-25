@@ -40,13 +40,21 @@ def make_saw_table():
     return ret
 saw_table = make_saw_table()
 
-def get_saw_value(freq, normalized_angle):
-    note_index = lookup_table[int(freq)]
-    array = saw_table[note_index]
+def get_saw_value_from_array(array, normalized_angle):
     index_float = normalized_angle * 4095
     index = int(index_float)
     fragment = index_float - index
-
     return array[4095 - index] * (1 - fragment) + array[4095 - index - 1] * fragment
 
+def get_saw_value(freq, normalized_angle):
+    note_index = lookup_table[int(freq)]
+    array = saw_table[note_index]
+    return get_saw_value_from_array(array, normalized_angle)
+
 np_get_saw_value = np.frompyfunc(get_saw_value, 2, 1)
+
+# def make_np_get_saw_value(freq):
+#     note_index = lookup_table[int(freq)]
+#     array = saw_table[note_index]
+#     fn = lambda normalized_angle: get_saw_value_from_array(array, normalized_angle)
+#     return np.frompyfunc(fn, 2, 1)

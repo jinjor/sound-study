@@ -1,12 +1,12 @@
 import numpy as np
-from wavetable import np_get_saw_value
+import wavetable
 
 def hard_sync(freq, t, opt):
     return np.sin(opt['ratio'] * (2 * np.pi) * np.remainder(freq * t, 1))
 
 def wt_hard_sync(freq, t, opt):
     normalized_angle = np.remainder(freq * t, 1)
-    angle = (np_get_saw_value(freq, normalized_angle) * np.pi + np.pi).astype('float32')
+    angle = (_wt_saw(freq, normalized_angle) * np.pi + np.pi).astype('float32')
     return np.sin(opt['ratio'] * angle)
 
 def _sin(normalized_angle):
@@ -30,15 +30,17 @@ def saw(freq, t, opt):
     normalized_angle = np.remainder(freq * t, 1)
     return _saw(normalized_angle)
 
+_wt_saw = wavetable.np_get_saw_value
+
 def wt_saw(freq, t, opt):
     normalized_angle = np.remainder(freq * t, 1)
-    return np_get_saw_value(freq, normalized_angle)
+    return _wt_saw(freq, normalized_angle)
 
 def fm_help(career, modulator, opt, freq, t):
     normalized_angle1 = np.remainder(freq * t, 1)
     normalized_angle2 = np.remainder(opt['ratio'] * freq * t, 1)
-    normalized_angle = np.remainder(normalized_angle1 + opt['amount'] * modulator(normalized_angle2), 1)
-    return career(normalized_angle)
+    normalized_angle = np.remainder(normalized_angle1 + opt['amount'] * modulator(freq, normalized_angle2), 1).astype('float32')
+    return career(freq, normalized_angle)
 
 def fm(career, modulator):
     return lambda freq, t, opt: fm_help(career, modulator, opt, freq, t)
