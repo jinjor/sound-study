@@ -35,6 +35,8 @@ def make_saw_table():
     num_partials = np.int_(MAX_FREQ / freqs)
     angles = 2 * math.pi / (NUM_SAMPLES - 1) * np.arange(NUM_SAMPLES)
     ret = np_sum_saw_partials(num_partials.reshape(-1, 1), angles)
+    max = np.max(np.abs(ret[0]))
+    ret = ret / max
     print(ret.shape)
     print("done")
     return ret
