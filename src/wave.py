@@ -30,6 +30,14 @@ def saw(freq, t, opt):
     normalized_angle = np.remainder(freq * t, 1)
     return _saw(normalized_angle)
 
+def saw_with_num_partials(freq, t, num_partials):
+    normalized_angle = np.remainder(freq * t, 1)
+    array = wavetable.make_one_saw_array(num_partials)
+    def help(normalized_angle):
+        return wavetable.get_saw_value_from_array(array, normalized_angle)
+    np_help = np.frompyfunc(help, 1, 1)
+    return np_help(normalized_angle)
+
 _wt_saw = wavetable.np_get_saw_value
 
 def wt_saw(freq, t, opt):

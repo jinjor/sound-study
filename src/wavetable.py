@@ -28,6 +28,11 @@ def sum_saw_partials(num_partials, angle):
     return np.sum(np.sin(n * angle) / n * gibbs_fix)
 np_sum_saw_partials = np.frompyfunc(sum_saw_partials, 2, 1)
 
+def make_one_saw_array(num_partials):
+    angles = 2 * math.pi / (NUM_SAMPLES - 1) * np.arange(NUM_SAMPLES)
+    ret = np_sum_saw_partials(num_partials, angles)
+    return ret
+
 def make_saw_table():
     print("creating saw table")
     variations = np.arange(NUM_VARIATION)
